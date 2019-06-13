@@ -24,7 +24,7 @@ void writeSysInfoToConsole(SysInfo sys, WINDOW* sys_win){
 
     mvwprintw(sys_win,2,2,getCString(( "OS: " + sys.getOSName())));
     mvwprintw(sys_win,3,2,getCString(( "Kernel version: " + sys.getKernelVersion())));
-    mvwprintw(sys_win,4,2,getCString( "CPU: "));
+    mvwprintw(sys_win,4,2,getCString( "CPU:    "));
     wattron(sys_win,COLOR_PAIR(1));
     wprintw(sys_win,getCString(Util::getProgressBar(sys.getCpuPercent())));
     wattroff(sys_win,COLOR_PAIR(1));
@@ -48,12 +48,12 @@ void writeSysInfoToConsole(SysInfo sys, WINDOW* sys_win){
 void getProcessListToConsole(std::vector<string> processes,WINDOW* win){
 
     wattron(win,COLOR_PAIR(2));
-    mvwprintw(win,1,2,"PID:");
-    mvwprintw(win,1,9,"User:");
-    mvwprintw(win,1,16,"CPU[%%]:");
-    mvwprintw(win,1,26,"RAM[MB]:");
-    mvwprintw(win,1,35,"Uptime:");
-    mvwprintw(win,1,44,"CMD:");
+    mvwprintw(win,1,3,"PID:");
+    mvwprintw(win,1,13,"User:");
+    mvwprintw(win,1,19,"CPU[%%]:");
+    mvwprintw(win,1,27,"RAM[MB]:");
+    mvwprintw(win,1,38,"Uptime:");
+    mvwprintw(win,1,46,"CMD:");
     wattroff(win, COLOR_PAIR(2));
     for(int i=0; i< processes.size();i++){
         mvwprintw(win,2+i,2,getCString(processes[i]));
@@ -74,22 +74,22 @@ void printMain(SysInfo sys,ProcessContainer procs){
     init_pair(2,COLOR_GREEN,COLOR_BLACK);
     int counter = 0;
     while(1){
-    box(sys_win,0,0);
-    box (proc_win,0,0);
-    procs.refreshList();
-    std::vector<std::vector<std::string>> processes = procs.getList();
-    writeSysInfoToConsole(sys,sys_win);
-    getProcessListToConsole(processes[counter],proc_win);
-    wrefresh(sys_win);
-    wrefresh(proc_win);
-    refresh();
-    sleep(1);
-    if(counter ==  (processes.size() -1)){
-        counter = 0;
-    }
-    else {
-        counter ++;
-    }
+        box(sys_win,0,0);
+        box (proc_win,0,0);
+        procs.refreshList();
+        std::vector<std::vector<std::string>> processes = procs.getList();
+        writeSysInfoToConsole(sys,sys_win);
+        getProcessListToConsole(processes[counter],proc_win);
+        wrefresh(sys_win);
+        wrefresh(proc_win);
+        refresh();
+        sleep(1);
+        if(counter ==  (processes.size() -1)){
+            counter = 0;
+        }
+        else {
+            counter ++;
+        }
     }
 	endwin();
 }
