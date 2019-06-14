@@ -7,89 +7,89 @@ I created Linux System Monitor. It monitors system status and display it on a te
 ![alt system_monitor](images/system_monitor_2.jpg)
 
 - System Information
- - OS information
- - Kernel version
- - CPU usage(%)
- - each CPU core usage(%)
- - Memory Usage(%)
- - Total Processes
- - Running Processes
- - System Up Time (HH:MM:SS)
+  - OS information
+  - Kernel version
+  - CPU usage(%)
+  - each CPU core usage(%)
+  - Memory Usage(%)
+  - Total Processes
+  - Running Processes
+  - System Up Time (HH:MM:SS)
 
 - Process information
- - PID (process id)
- - User (user name)
- - CPU usage (%)
- - RAM usage (Mbyte)
- - Process Up Time (seconds)
- - CMD (command line)
+  - PID (process id)
+  - User (user name)
+  - CPU usage (%)
+  - RAM usage (Mbyte)
+  - Process Up Time (seconds)
+  - CMD (command line)
 
 In the process information section, up to 10 processes are shown at one time and then another 10 processes come next second, and so on. In this way the system monitor continuously displays its information updated.
 
 ## Where all information comes from?
 #### System Information
 - **OS information**
- - file:`/etc/os-release`, line:`"PRETTY NAME="`
+  - file:`/etc/os-release`, line:`"PRETTY NAME="`
 
 - **Kernel Version**
- - file:`/proc/version`, line:`"Linux version"`
+  - file:`/proc/version`, line:`"Linux version"`
 
 - **CPU usage**
- - file:`/proc/stat`, line:`cpu`
- - format:`cpu [1] [2] [3] [4] [5] [6] [7] [8] [9] [10]`
- - field: `[1]`:USER, `[2]`:NICE, `[3]`:SYSTEM, `[4]`:IDLE, `[5]`:IOWAIT, `[6]`:IRQ, `[7]`:SOFTIRQ, `[8]`:STEAL, `[9]`:GUEST, `[10]`:GUEST_NICE
- - (1+2+3+6+7+8+9+10) = ACTIVE, (4+5) = IDLE
- - CPU% = `ACTIVE/(ACTIVE+IDLE)*100`  for the specific period
+  - file:`/proc/stat`, line:`cpu`
+  - format:`cpu [1] [2] [3] [4] [5] [6] [7] [8] [9] [10]`
+  - field: `[1]`:USER, `[2]`:NICE, `[3]`:SYSTEM, `[4]`:IDLE, `[5]`:IOWAIT, `[6]`:IRQ, `[7]`:SOFTIRQ, `[8]`:STEAL, `[9]`:GUEST, `[10]`:GUEST_NICE
+  - (1+2+3+6+7+8+9+10) = ACTIVE, (4+5) = IDLE
+  - CPU% = `ACTIVE/(ACTIVE+IDLE)*100`  for the specific period
 
 - **CPU core usage**
- - file:`/proc/stat`, line:`cpu` + `[core number]` (e.g. `cpu0`)
- - (calculation is the same as CPU usage)
+  - file:`/proc/stat`, line:`cpu` + `[core number]` (e.g. `cpu0`)
+  - (calculation is the same as CPU usage)
 
 - **Memory Usage**
- - file:`/proc/meminfo`
- - `MemAvailable: xxx kB`
- - `MemFree: xxx kB`
- - `Buffers: xxx kB`
- - Memory usage(%) = `MemFree / (MemAvailable - Buffers) * 100`
+  - file:`/proc/meminfo`
+  - `MemAvailable: xxx kB`
+  - `MemFree: xxx kB`
+  - `Buffers: xxx kB`
+  - Memory usage(%) = `MemFree / (MemAvailable - Buffers) * 100`
 
 - **Total processes**
- - file:`/proc/stat`, line:`processes [number of processes]`
+  - file:`/proc/stat`, line:`processes [number of processes]`
 
 - **Running processes**
- - file:`/proc/stat`, line:`procs_running [number of processes]`
+  - file:`/proc/stat`, line:`procs_running [number of processes]`
 
 - **System Up Time**
- - file:`/proc/uptime`, the first token of the line (seconds)
+  - file:`/proc/uptime`, the first token of the line (seconds)
 
 #### Process information
 - **PID**
- - get the pid list from `/proc/` directory. `/proc/` contains directories each of which has a dir name of its pid.
+  - get the pid list from `/proc/` directory. `/proc/` contains directories each of which has a dir name of its pid.
 
 - **User**
- - get User ID of the process. file:`/proc/[pid]/status`, line:`Uid [ID]`.
- - get User Name corresponding to the Uid from file:`/etc/passwd`, line:`[user name]:[?]:[Uid]:...`
+  - get User ID of the process. file:`/proc/[pid]/status`, line:`Uid [ID]`.
+  - get User Name corresponding to the Uid from file:`/etc/passwd`, line:`[user name]:[?]:[Uid]:...`
 
 - **CPU usage**
- - file:`/proc/[pid]/stat`, which contains only one line.
- - The line contains 44 tokens (`[0]` - `[43]`):
-   - `[13]`= CPU time spent in user code (in clock ticks)
-   - `[14]`= CPU time spent in kernel code (in clock ticks)
-   - `[15]`= CPU time spent in user code, including time from children(in clock ticks)
-   - `[16]`= CPU time spent in kernel code, including time from children(in clock ticks)
-   - `[21]`= Time when the process started (in clock ticks)
+  - file:`/proc/[pid]/stat`, which contains only one line.
+  - The line contains 44 tokens (`[0]` - `[43]`):
+    - `[13]`= CPU time spent in user code (in clock ticks)
+    - `[14]`= CPU time spent in kernel code (in clock ticks)
+    - `[15]`= CPU time spent in user code, including time from children(in clock ticks)
+    - `[16]`= CPU time spent in kernel code, including time from children(in clock ticks)
+    - `[21]`= Time when the process started (in clock ticks)
   - cpu total time = (`[13]+[14]+[15]+[16]`) in second
   - process run time = *System Up Time* - ([21] in second)
-  - cpu usage(%) = (cpu totak time)/(process run time) * 100
+  - cpu usage(%) = (cpu total time)/(process run time) * 100
 
-- RAM usage (Mbyte)
- - file:`/proc/[PID]/status`, line:`VmData: xxxx kB`
- - get `xxxx` in Mbyte
+- **RAM usage (Mbyte)**
+  - file:`/proc/[PID]/status`, line:`VmData: xxxx kB`
+  - get `xxxx` in Mbyte
 
-- Process Up Time (seconds)
+- **Process Up Time (seconds)**
   - file:`/proc/[pid]/stat`, token`[13]` converted to second
 
-- CMD
-  - file:/proc/[pid]/cmdline. It has only one line that describes just a command.
+- **CMD**
+  - file:`/proc/[pid]/cmdline`. It has only one line of the command executed.
 
 
 ## Repository
@@ -103,7 +103,6 @@ My task was to implement `ProcessParser.h` and `Process.h`. Also I modified some
  - `utils.h`: `Util` class. this class provides utility methods.
  - `main.cpp`: This file includes `main()`. It instantiates `ProcessContainer` and `SysInfo`, and print all the information on the terminal using **ncurses** library.
  - `try.cpp`: A driver program I made for the unit test on `ProcessParser.h`.
- - `images/`
 
 ## To compile and execute this program
 
