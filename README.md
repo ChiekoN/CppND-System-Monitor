@@ -2,7 +2,7 @@
 
 ## Overview
 
-I created Linux System Monitor. It monitors system status and display it on a terminal. The information is updated at every second.
+I created Linux System Monitor in C++. It monitors system status and display it on a terminal. The information is updated at every second.
 
 ![alt system_monitor](images/system_monitor_2.jpg)
 
@@ -38,8 +38,8 @@ In the process information section, up to 10 processes are shown at one time and
   - file:`/proc/stat`, line:`cpu`
   - format:`cpu [1] [2] [3] [4] [5] [6] [7] [8] [9] [10]`
   - field: `[1]`:USER, `[2]`:NICE, `[3]`:SYSTEM, `[4]`:IDLE, `[5]`:IOWAIT, `[6]`:IRQ, `[7]`:SOFTIRQ, `[8]`:STEAL, `[9]`:GUEST, `[10]`:GUEST_NICE
-  - (1+2+3+6+7+8+9+10) = ACTIVE, (4+5) = IDLE
-  - CPU% = `ACTIVE/(ACTIVE+IDLE)*100`  for the specific period
+  - (`[1]`+`[2]`+`[3]`+`[6]`+`[7]`+`[8]`+`[9]`+`[10]`) = ACTIVE, (`[4]`+`[5]`) = IDLE
+  - CPU% = `ACTIVE/(ACTIVE+IDLE)*100`  for the specific time interval
 
 - **CPU core usage**
   - file:`/proc/stat`, line:`cpu` + `[core number]` (e.g. `cpu0`)
@@ -78,7 +78,7 @@ In the process information section, up to 10 processes are shown at one time and
     - `[16]`= CPU time spent in kernel code, including time from children(in clock ticks)
     - `[21]`= Time when the process started (in clock ticks)
   - cpu total time = (`[13]+[14]+[15]+[16]`) in second
-  - process run time = *System Up Time* - ([21] in second)
+  - process run time = *System Up Time* - (`[21]` in second)
   - cpu usage(%) = (cpu total time)/(process run time) * 100
 
 - **RAM usage (Mbyte)**
